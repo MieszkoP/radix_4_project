@@ -17,4 +17,6 @@ Radix_4_multiplier(8bit x, 8bit y)
   ENDFOR
   return suma;
 
+```
+Squentional version:
 ![DiagramStanow_sekw](https://github.com/user-attachments/assets/2ff4a36c-2310-4e3c-a1d4-f7cc359c312f)
