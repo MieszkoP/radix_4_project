@@ -40,11 +40,6 @@ module radix_4(clock, reset, start, x_value, y_value, total_product, ready);
     
     always @(posedge clock)
     begin
-        
-    end
-    
-    always @(posedge clock)
-    begin
         if(reset==1)
             begin
                 current_state<=S0;

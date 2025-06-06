@@ -32,8 +32,8 @@ module tb_radix_4();
     begin
         clock = 1;
         reset = 1;
-        x = 8'd106;
-        y = 8'd111;
+        x = 8'd21;
+        y = 8'd37;
         #10 reset <= 0;
         #10 start <= 1;
         #30 start <= 0;
