@@ -21,22 +21,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module generator(reset_generator, reset_radix, start_radix, clk, x, y);
-    input reset_generator, clk;
+module generator(reset_to_generator, clk, x, y);
+    input reset_to_generator, clk;
     reg[15:0] register;
     output wire[7:0] x, y;
-    output reg reset_radix, start_radix;
     assign x = register[15:8];
     assign y = register[7:0];
+    always @(posedge reset_to_generator)
+    begin
+        register[15] <= 1;
+        register[14:0] <= 0;
+    end
+    
     always @(posedge clk)
     begin
-        start_radix <=1;
-        if(reset_generator==1)
-            begin
-            register[15] <= 1;
-            register[14:0] <= 0;
-            end
-        else
+        if(reset_to_generator==1)
             begin
             register[0] <= register[15];
             register[1] <= register[0];
@@ -54,6 +53,7 @@ module generator(reset_generator, reset_radix, start_radix, clk, x, y);
             register[13] <= register[12];
             register[14] <= register[13];
             register[15] <= register[14];
+            $display("(x = %d) * (y = %d)", x, y);
             end
     end
 endmodule

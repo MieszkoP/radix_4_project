@@ -97,7 +97,8 @@ module radix_4(clock, reset, start, x_value, y_value, total_product, ready);
             end
             endcase
             end
-        $display("Stan: %d, iteracja: %d, suma: %d, partial_product: %d,  maska: %d %d %d", current_state, iter, total_product, partial_product, x_value_exp[(iter<<1)],  x_value_exp[(iter<<1)+1],  x_value_exp[(iter<<1)+2]);
+        //$display("Stan: %d, iteracja: %d, suma: %d, partial_product: %d,  maska: %d %d %d", current_state, iter, total_product, partial_product, x_value_exp[(iter<<1)],  x_value_exp[(iter<<1)+1],  x_value_exp[(iter<<1)+2]);
+        $display("x =%d y=%d", x_value, y_value);
     end
     
 endmodule
