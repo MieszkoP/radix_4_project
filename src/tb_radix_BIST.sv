@@ -31,7 +31,8 @@ module tb_radix_BIST();
     
     initial
     begin
-        #10 is_tested = 1'b1;
+        is_tested = 1'b0;
+       // #10 is_tested = 1'b1;
     end
     
     initial

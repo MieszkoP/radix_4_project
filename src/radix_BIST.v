@@ -26,10 +26,13 @@ module radix_BIST(active_test, user_x, user_y, clk, user_start, user_reset, resu
     input[7:0] user_y;
     input user_start, user_reset;
     input clk;
-    output wire[15:0] result;
+    output reg[15:0] result;
+    wire[15:0] result_of_multypling;
+    wire[15:0] result_of_test; //signature
     reg start, reset;
     reg[7:0] x, y;
-    output wire ready;
+    output reg ready;
+    wire ready_of_multypling, ready_of_test;
     wire [7:0] x_from_generator, y_from_generator;
     wire start_from_generator, reset_from_generator;
     
@@ -37,7 +40,8 @@ module radix_BIST(active_test, user_x, user_y, clk, user_start, user_reset, resu
     clock_divider clock_divider_instance(clk, clk_for_bist);
     generator_start_restart generator_start_restart_instance(active_test, clk, start_from_generator, reset_from_generator);
     generator generator_lfsr_instance(active_test, clk_for_bist, x_from_generator, y_from_generator);
-    radix_4 radix_4_instance(clk, reset, start, x, y, result, ready);
+    radix_4 radix_4_instance(clk, reset, start, x, y, result_of_multypling, ready_of_multypling);
+    misr misr_instance(active_test, clk_for_bist, result_of_multypling, result_of_test, ready_of_test);
     always @(*)
     begin
         if(active_test==1)
@@ -46,6 +50,8 @@ module radix_BIST(active_test, user_x, user_y, clk, user_start, user_reset, resu
              reset = reset_from_generator;
              x = x_from_generator;
              y = y_from_generator;
+             result = result_of_test;
+             ready = ready_of_test;
         end 
         else
         begin
@@ -53,6 +59,10 @@ module radix_BIST(active_test, user_x, user_y, clk, user_start, user_reset, resu
              reset = user_reset;
              x = user_x;
              y = user_y;
+             result = result_of_multypling;
+             ready = ready_of_multypling;
         end
     end
+    
+    
 endmodule

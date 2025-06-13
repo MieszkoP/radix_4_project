@@ -52,6 +52,7 @@ module radix_4(clock, reset, start, x_value, y_value, total_product, ready);
             begin
             case(current_state)
             S0: begin
+                $display("x =%d y=%d", $signed(x_value), $signed(y_value));
                 if(start ==1) current_state <= S1;
             end
             S1: begin
@@ -78,7 +79,7 @@ module radix_4(clock, reset, start, x_value, y_value, total_product, ready);
             end
             S3: begin
                 partial_product <= -partial_product;
-                if(x_value_exp[(iter<<1)+1] == x_value_exp[iter<<1]) current_state <= S4; else current_state <= S5;
+                if(x_value_exp[(iter<<1)+2] == x_value_exp[iter<<1]) current_state <= S4; else current_state <= S5;
             end
             S4: begin
                 partial_product <= partial_product << 1;
@@ -98,7 +99,7 @@ module radix_4(clock, reset, start, x_value, y_value, total_product, ready);
             endcase
             end
         //$display("Stan: %d, iteracja: %d, suma: %d, partial_product: %d,  maska: %d %d %d", current_state, iter, total_product, partial_product, x_value_exp[(iter<<1)],  x_value_exp[(iter<<1)+1],  x_value_exp[(iter<<1)+2]);
-        $display("x =%d y=%d", x_value, y_value);
+        //$display("x =%d y=%d", x_value, y_value);
     end
     
 endmodule

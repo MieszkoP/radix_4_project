@@ -26,11 +26,6 @@ module generator_start_restart(reset_to_generator, clk, start, reset);
     output reg start, reset;
     reg[4:0] counter = 4'b0000;
     
-    always @(posedge reset_to_generator)
-    begin
-        counter <= 4'b0000;
-    end
-    
     always @(posedge clk)
     begin
     if(reset_to_generator)
@@ -50,5 +45,10 @@ module generator_start_restart(reset_to_generator, clk, start, reset);
             end
             counter = counter+1;
         end
+        else
+        begin
+        counter <= 4'b0000;
+        end
+        //$display("Licznik: %d",counter);
     end
 endmodule
