@@ -32,15 +32,15 @@ module tb_radix_BIST();
     initial
     begin
         is_tested = 1'b0;
-       // #10 is_tested = 1'b1;
+        #10 is_tested = 1'b1;
     end
     
     initial
     begin
         clock = 1;
         reset = 1;
-        x = 8'd18;
-        y = 8'd100;
+        x = 8'b11111010;
+        y = 8'b00000010;
         #10 reset <= 0;
         #10 start <= 1;
         #30 start <= 0;
@@ -53,6 +53,6 @@ module tb_radix_BIST();
     
     always @(posedge ready)
     begin
-        $display("wynik: %d", result);
+        $display("wynik: %d", $signed(result));
     end
 endmodule

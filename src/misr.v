@@ -36,7 +36,7 @@ module misr(reset_to_misr, clk, result_of_radix, signature, ready);
             signature[14] <= signature[13]^result_of_radix[14];
             signature[15] <= signature[14]^result_of_radix[15];
             counter_of_generated <= counter_of_generated +1;
-            $display("Wynik: ", signature);
+            $display("Wynik: ", $signed(result_of_radix));
             $display("Sygnatura: ", signature);
             end
           if(counter_of_generated==5'b11111)

@@ -22,7 +22,7 @@
 
 module tb_radix_4();
     reg clock, reset, start;
-    reg [7:0] x, y;
+    reg signed [7:0] x, y;
     wire ready;
     wire[15:0] result;
     
@@ -32,8 +32,8 @@ module tb_radix_4();
     begin
         clock = 1;
         reset = 1;
-        x = 8'd21;
-        y = 8'd57;
+        x = 3;
+        y = -40;
         #10 reset <= 0;
         #10 start <= 1;
         #30 start <= 0;
@@ -46,7 +46,7 @@ module tb_radix_4();
     
     always @(posedge ready)
     begin
-        $display("wynik: %d", result);
+        $display("wynik: %d", $signed(result));
     end
     
 endmodule
