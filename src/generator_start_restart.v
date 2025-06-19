@@ -28,18 +28,26 @@ module generator_start_restart(reset_to_generator, clk, start, reset);
     
     always @(posedge clk)
     begin
-    if(reset_to_generator)
+    if(reset_to_generator == 0)
         begin
             if(counter==4'b0000)
             begin
                 reset <= 1;
+                start<= 0;
             end
             if(counter==4'b0001)
             begin
                 reset <= 0;
+            end
+            if(counter==4'b0010)
+            begin
                 start <= 1;
             end
             if(counter==4'b0010)
+            begin
+                start <= 1;
+            end
+            if(counter==4'b0101)
             begin
                 start <= 0;
             end

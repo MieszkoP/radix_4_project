@@ -81,5 +81,6 @@
 !*.elf
 !*.bmm
 !*.xmp
-[C[D:
-s>><<
+/project_zynq
+/project
+

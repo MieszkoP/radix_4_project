@@ -1,0 +1,390 @@
+
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06/09/2025 12:40:45 PM
+// Design Name: 
+// Module Name: radix_BIST
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module radix_BIST(active_test, user_x, user_y, clk, user_start, user_reset, result, ready);
+    input active_test;
+    input[7:0] user_x;
+    input[7:0] user_y;
+    input user_start, user_reset;
+    input clk;
+    output reg[15:0] result;
+    wire[15:0] result_of_multypling;
+    wire[15:0] result_of_test; //signature
+    reg start, reset;
+    reg[7:0] x, y;
+    output reg ready;
+    wire ready_of_multypling, ready_of_test;
+    wire [7:0] x_from_generator, y_from_generator;
+    wire start_from_generator, reset_from_generator;
+    
+    wire clk_for_bist;
+    clock_divider clock_divider_instance(clk, clk_for_bist);
+    generator_start_restart generator_start_restart_instance(clk_for_bist, clk, start_from_generator, reset_from_generator);
+    generator generator_lfsr_instance(user_reset, clk_for_bist, x_from_generator, y_from_generator);
+    radix_4 radix_4_instance(clk, reset, start, x, y, result_of_multypling, ready_of_multypling);
+    misr misr_instance(user_reset, clk_for_bist, result_of_multypling, result_of_test, ready_of_test);
+   always @(posedge clk) 
+   begin
+        if (active_test) begin
+            start <= start_from_generator;
+            reset <= reset_from_generator;
+            x <= x_from_generator;
+            y <= y_from_generator;
+            result <= result_of_test;
+            ready <= ready_of_test;
+        end else begin
+            start <= user_start;
+            reset <= user_reset;
+            x <= user_x;
+            y <= user_y;
+            result <= result_of_multypling;
+            ready <= ready_of_multypling;
+        end
+    end
+    
+    
+endmodule
+
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06/09/2025 12:39:19 PM
+// Design Name: 
+// Module Name: clock_divider
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module clock_divider(clk, output_clk);
+    input clk;
+    output reg output_clk;
+    reg[4:0] counter = 4'b1111;
+    always @(posedge clk)
+    begin
+        if(counter==4'b0000)
+            output_clk <= 0;
+        if(counter==4'b0001)
+            output_clk <= 1;
+        if(counter==4'b0010)
+           output_clk <= 0;
+        counter = counter+1;
+    end
+endmodule
+
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06/09/2025 12:03:17 PM
+// Design Name: 
+// Module Name: generator_start_restart
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module generator_start_restart(reset_to_generator, clk, start, reset);
+    input reset_to_generator;
+    input clk;
+    output reg start, reset;
+    reg[4:0] counter = 4'b0000;
+    
+    always @(posedge clk)
+    begin
+    if(reset_to_generator == 0)
+        begin
+            if(counter==4'b0000)
+            begin
+                reset <= 1;
+                start<= 0;
+            end
+            if(counter==4'b0001)
+            begin
+                reset <= 0;
+            end
+            if(counter==4'b0010)
+            begin
+                start <= 1;
+            end
+            if(counter==4'b0010)
+            begin
+                start <= 1;
+            end
+            if(counter==4'b0101)
+            begin
+                start <= 0;
+            end
+            counter = counter+1;
+        end
+        else
+        begin
+        counter <= 4'b0000;
+        end
+        //$display("Licznik: %d",counter);
+    end
+endmodule
+
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06/06/2025 11:42:45 AM
+// Design Name: 
+// Module Name: generator
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// x16 + x5 + x3 + x2 + 1
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module generator(reset_to_generator, clk, x, y);
+    input reset_to_generator, clk;
+    reg[15:0] register;
+    reg[5:0] counter_of_generated;
+    output wire[7:0] x, y;
+    assign x = register[15:8];
+    assign y = register[7:0];
+    //always @(posedge reset_to_generator)
+    //begin
+    //    register[15] <= 1;
+   //     register[14:0] <= 0;
+    //    counter_of_generated <= 5'b00000; //Generate 2^5 =  32 pairs of numbers. 
+    //end
+    
+    always @(posedge clk)
+    begin
+        if(reset_to_generator==1'b1)
+        begin
+            register[15] <= 1;
+            register[14:0] <= 15'b000000000000000;
+            counter_of_generated <= 5'b00000; //Generate 2^5 =  32 pairs of numbers. 
+        end
+        if(reset_to_generator==1'b0 && counter_of_generated<5'b11111)
+            begin
+            register[0] <= register[15];
+            register[1] <= register[0];
+            register[2] <= register[1]^register[15];
+            register[3] <= register[2]^register[15];
+            register[4] <= register[3];
+            register[5] <= register[4]^register[15];
+            register[6] <= register[5];
+            register[7] <= register[6];
+            register[8] <= register[7];
+            register[9] <= register[8];
+            register[10] <= register[9];
+            register[11]<= register[10];
+            register[12] <= register[11];
+            register[13] <= register[12];
+            register[14] <= register[13];
+            register[15] <= register[14];
+            counter_of_generated <= counter_of_generated +1;
+            $display("x: %d, y: %d ", $signed(x), $signed(y));
+            end
+    end
+endmodule
+
+
+module misr(reset_to_misr, clk, result_of_radix, signature, ready);
+    input reset_to_misr, clk;
+    input[15:0] result_of_radix;
+    output reg[15:0] signature;
+    reg[5:0] counter_of_generated;
+    output reg ready;
+
+    
+    always @(posedge clk)
+    begin
+        if(reset_to_misr==1)
+        begin
+            $display("Reset to Misr entered");
+            signature[15] <= 1;
+            signature[14:0] <= 15'b000000000000000;
+            counter_of_generated <= 5'b00000; //Generate 2^5 =  32 pairs of numbers. 
+            ready<=0;
+        end
+        if(reset_to_misr==0 && counter_of_generated<5'b11111)
+            begin
+            signature[0] <= signature[15]^result_of_radix[0];
+            signature[1] <= signature[0]^result_of_radix[1];
+            signature[2] <= (signature[1]^signature[15])^result_of_radix[2];
+            signature[3] <= (signature[2]^signature[15])^result_of_radix[3];
+            signature[4] <= signature[3]^result_of_radix[4];
+            signature[5] <= (signature[4]^signature[15])^result_of_radix[5];
+            signature[6] <= signature[5]^result_of_radix[6];
+            signature[7] <= signature[6]^result_of_radix[7];
+            signature[8] <= signature[7]^result_of_radix[8];
+            signature[9] <= signature[8]^result_of_radix[9];
+            signature[10] <= signature[9]^result_of_radix[10];
+            signature[11]<= signature[10]^result_of_radix[11];
+            signature[12] <= signature[11]^result_of_radix[12];
+            signature[13] <= signature[12]^result_of_radix[13];
+            signature[14] <= signature[13]^result_of_radix[14];
+            signature[15] <= signature[14]^result_of_radix[15];
+            counter_of_generated <= counter_of_generated +1;
+            $display("Wynik z radixa: %d, obecna sygnatura: %d", $signed(result_of_radix), signature);
+            end
+          if(counter_of_generated==5'b11111 && reset_to_misr==0)
+            ready<=1;
+    end
+endmodule
+
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/31/2025 01:53:10 PM
+// Design Name: 
+// Module Name: radix_4
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module radix_4(clock, reset, start, x_value, y_value, total_product, ready);
+    input clock, reset, start;
+    input[7:0] x_value, y_value;
+    output reg ready;
+    wire[10:0] x_value_exp;
+    reg[3:0] current_state;
+    reg[3:0] iter;
+    reg[15:0] partial_product;
+    output reg[15:0] total_product;
+    
+    reg[7:0] pseudo_y_bits;
+    reg zero_for_easy_comparisons;
+    assign x_value_exp[8:1] = x_value;
+    assign x_value_exp[0] = 1'b0;
+    assign x_value_exp[10:9] = 2'b11;
+    
+    parameter S0 = 4'h00, S1 = 4'h01, S2 = 4'h02, S3 = 4'h03, S4 = 4'h04, S5 = 4'h05,
+    S6 = 4'h06, S7 = 4'h07, S8 = 4'h08, S9 = 4'h09, S10 = 4'h0a,
+    S11 = 4'h0b, S12 = 4'h0c, S13 = 4'h0d;
+    
+    wire[15:0] y_value_real;
+    assign y_value_real[15:8] = pseudo_y_bits;
+    assign y_value_real[7:0] = y_value;
+    
+    always @(posedge clock)
+    begin
+        if(reset==1)
+            begin
+                current_state<=S0;
+                ready <= 0;
+                partial_product <= 16'd0;
+                total_product <= 16'd0;
+                iter <= 0;
+            end
+         else
+            begin
+            case(current_state)
+            S0: begin
+                //$display("x =%d y=%d", $signed(x_value), $signed(y_value));
+                if(y_value[7] == 1) pseudo_y_bits <= 8'b11111111; else pseudo_y_bits <= 8'b00000000;
+                if(start ==1) current_state <= S1;
+            end
+            S1: begin
+                if(iter < 4) current_state <= S2; else current_state <= S7;
+            end
+            S2: begin
+                partial_product <= y_value_real<<(iter<<1);
+                if((x_value_exp[iter<<1] == x_value_exp[(iter<<1)+1]) && (x_value_exp[(iter<<1)+1] == x_value_exp[(iter<<1)+2]))
+                    current_state <= S6;
+                else 
+                begin
+                    if(1== x_value_exp[(iter<<1)+2])
+                        current_state <= S3;
+                    else 
+                    begin
+                        if(x_value_exp[(iter<<1)]== x_value_exp[(iter<<1)+1])
+                            current_state <= S4;
+                        else 
+                        begin
+                            current_state <= S5;
+                        end
+                    end
+                end
+            end
+            S3: begin
+                partial_product <= -partial_product;
+                if(x_value_exp[(iter<<1)+1] == x_value_exp[iter<<1]) current_state <= S4; else current_state <= S5;
+            end
+            S4: begin
+                partial_product <= partial_product << 1;
+                current_state <= S5;
+            end
+            S5: begin
+                total_product <= partial_product + total_product;
+                current_state <= S6;
+            end
+            S6: begin
+                iter <= iter+1;
+                if(iter +1 < 4) current_state <= S2; else current_state <= S7; //Iter-1, bo nieblokujące przypisanie
+            end
+            S7: begin
+                ready <= 1;
+            end
+            endcase
+            end
+        $display("Stan: %d, iteracja: %d, suma: %d, partial_product: %d,  maska: %d %d %d", current_state, iter, $signed(total_product), partial_product, x_value_exp[(iter<<1)],  x_value_exp[(iter<<1)+1],  x_value_exp[(iter<<1)+2]);
+        //$display("x =%d y=%d", x_value, y_value);
+    end
+    
+endmodule
+

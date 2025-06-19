@@ -10,14 +10,15 @@ module misr(reset_to_misr, clk, result_of_radix, signature, ready);
     
     always @(posedge clk)
     begin
-        if(reset_to_misr==0)
+        if(reset_to_misr==1)
         begin
+            $display("Reset to Misr entered");
             signature[15] <= 1;
-            signature[14:0] <= 0;
+            signature[14:0] <= 15'b000000000000000;
             counter_of_generated <= 5'b00000; //Generate 2^5 =  32 pairs of numbers. 
             ready<=0;
         end
-        if(reset_to_misr==1 && counter_of_generated<5'b11111)
+        if(reset_to_misr==0 && counter_of_generated<5'b11111)
             begin
             signature[0] <= signature[15]^result_of_radix[0];
             signature[1] <= signature[0]^result_of_radix[1];
@@ -36,10 +37,9 @@ module misr(reset_to_misr, clk, result_of_radix, signature, ready);
             signature[14] <= signature[13]^result_of_radix[14];
             signature[15] <= signature[14]^result_of_radix[15];
             counter_of_generated <= counter_of_generated +1;
-            $display("Wynik: ", $signed(result_of_radix));
-            $display("Sygnatura: ", signature);
+            $display("Wynik z radixa: %d, obecna sygnatura: %d", $signed(result_of_radix), signature);
             end
-          if(counter_of_generated==5'b11111)
+          if(counter_of_generated==5'b11111 && reset_to_misr==0)
             ready<=1;
     end
 endmodule

@@ -37,13 +37,13 @@ module generator(reset_to_generator, clk, x, y);
     
     always @(posedge clk)
     begin
-        if(reset_to_generator==0)
+        if(reset_to_generator==1'b1)
         begin
             register[15] <= 1;
-            register[14:0] <= 0;
+            register[14:0] <= 15'b000000000000000;
             counter_of_generated <= 5'b00000; //Generate 2^5 =  32 pairs of numbers. 
         end
-        if(reset_to_generator==1 && counter_of_generated<5'b11111)
+        if(reset_to_generator==1'b0 && counter_of_generated<5'b11111)
             begin
             register[0] <= register[15];
             register[1] <= register[0];
@@ -62,7 +62,7 @@ module generator(reset_to_generator, clk, x, y);
             register[14] <= register[13];
             register[15] <= register[14];
             counter_of_generated <= counter_of_generated +1;
-            //$display("(x = %d) * (y = %d)", x, y);
+            $display("x: %d, y: %d ", $signed(x), $signed(y));
             end
     end
 endmodule

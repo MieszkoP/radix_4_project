@@ -23,7 +23,7 @@
 module tb_radix_BIST();
     reg clock, reset, start;
     reg [7:0] x, y;
-    reg is_tested = 0'b1;
+    reg is_tested = 1'b1;
     wire ready;
     wire[15:0] result;
     
@@ -31,8 +31,16 @@ module tb_radix_BIST();
     
     initial
     begin
-        is_tested = 1'b0;
-        #10 is_tested = 1'b1;
+       // is_tested = 1'b0;
+        //#10 is_tested = 1'b1;
+        //#11000 is_tested = 0;
+        //#100 is_tested = 1'b1;
+        //reset <= 0;
+        //#10 reset <= 1;
+        //#10 start <= 1;
+       // #10 start <= 0;
+        //#11000 reset<= 1;
+        
     end
     
     initial
@@ -41,9 +49,34 @@ module tb_radix_BIST();
         reset = 1;
         x = 8'b11111010;
         y = 8'b00000010;
-        #10 reset <= 0;
-        #10 start <= 1;
-        #30 start <= 0;
+        #5000 reset <= 0;
+        //#20 start <= 1;
+        //#30 start <= 0;
+        
+        #16000 reset <= 1;
+        #5000 reset<= 0;
+        //#20 start<=1;
+       // #30 start<=0;
+        
+        #16000 reset <= 1;
+        #5000 reset<= 0;
+      //  #20 start<=1;
+      //  #30 start<=0;
+        
+        #16000 reset <= 1;
+        #5000 reset<= 0;
+      //  #20 start<=1;
+      //  #30 start<=0;
+        
+        #16000 reset <= 1;
+        #5000 reset<= 0;
+      //  #20 start<=1;
+     //   #30 start<=0;
+     
+        #16000 reset <= 1;
+        #5000 reset<= 0;
+       // #20 start<=1;
+      //  #30 start<=0;
     end
     
     always
