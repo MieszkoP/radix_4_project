@@ -26,13 +26,13 @@ module tb_radix_4();
     wire ready;
     wire[15:0] result;
     
-    radix_4 instance_radix(clock, reset, start, x, y, result, ready);
+    radix_4_lut instance_radix(clock, reset, start, x, y, result, ready);
     
     initial
     begin
         clock = 1;
         reset = 1;
-        x = 3;
+        x = 19;
         y = -40;
         #10 reset <= 0;
         #10 start <= 1;
