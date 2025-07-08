@@ -1,0 +1,62 @@
+x: -128, y:    0 
+Wynik z radixa:      0, obecna sygnatura: 32768
+x:    0, y:   45 
+Wynik z radixa:      0, obecna sygnatura:    45
+x:    0, y:   90 
+Wynik z radixa:      0, obecna sygnatura:    90
+x:    0, y:  -76 
+Wynik z radixa:      0, obecna sygnatura:   180
+x:    1, y:  104 
+Wynik z radixa:    104, obecna sygnatura:   360
+x:    2, y:  -48 
+Wynik z radixa:    -96, obecna sygnatura:   696
+x:    5, y:  -96 
+Wynik z radixa:   -480, obecna sygnatura: 64208
+x:   11, y:   64 
+Wynik z radixa:    704, obecna sygnatura:  2989
+x:   22, y: -128 
+Wynik z radixa:  -2816, obecna sygnatura:  5530
+x:   45, y:    0 
+Wynik z radixa:      0, obecna sygnatura: 56884
+x:   90, y:    0 
+Wynik z radixa:      0, obecna sygnatura: 48197
+x:  -76, y:    0 
+Wynik z radixa:      0, obecna sygnatura: 30887
+x:  104, y:   45 
+Wynik z radixa:   4680, obecna sygnatura: 61774
+x:  -48, y:   90 
+Wynik z radixa:  -4320, obecna sygnatura: 61689
+x:  -96, y: -103 
+Wynik z radixa:   9888, obecna sygnatura:  3839
+x:   65, y:   31 
+Wynik z radixa:   2015, obecna sygnatura: 15198
+x: -126, y:   62 
+Wynik z radixa:  -7812, obecna sygnatura: 29027
+x:    4, y:   81 
+Wynik z radixa:    324, obecna sygnatura:   954
+x:    8, y:  -94 
+Wynik z radixa:   -752, obecna sygnatura:  1584
+x:   17, y:   68 
+Wynik z radixa:   1156, obecna sygnatura: 61808
+x:   34, y: -120 
+Wynik z radixa:  -4080, obecna sygnatura: 58953
+x:   69, y:   16 
+Wynik z radixa:   1104, obecna sygnatura: 15535
+x: -118, y:   32 
+Wynik z radixa:  -3776, obecna sygnatura: 32014
+x:   20, y:  109 
+Wynik z radixa:   2180, obecna sygnatura:  2908
+x:   40, y:  -38 
+Wynik z radixa:  -1520, obecna sygnatura:  7740
+x:   81, y:  -76 
+Wynik z radixa:  -6156, obecna sygnatura: 50792
+x:  -93, y:  104 
+Wynik z radixa:  -9672, obecna sygnatura: 27401
+x:   70, y:   -3 
+Wynik z radixa:   -210, obecna sygnatura:  3114
+x: -115, y:   -6 
+Wynik z radixa:    690, obecna sygnatura: 59258
+x:   27, y:  -39 
+Wynik z radixa:  -1053, obecna sygnatura: 52331
+x:   55, y:  -78 
+Wynik z radixa:  -4290, obecna sygnatura: 25368
